@@ -10,7 +10,7 @@ A general-purpose Model Context Protocol (MCP) server for solving combinatorial 
 
 - **Unified Interface**: Single MCP server for multiple optimization backends
 - **AI-Ready**: Designed for use with AI assistants through MCP protocol
-- **Portfolio Focus**: Specialized tools for portfolio optimization and risk management
+- **Financial Focus**: Specialized tools for portfolio optimization and risk management
 - **Extensible**: Modular design for easy addition of new solvers
 - **High Performance**: Optimized for large-scale problems
 - **Robust**: Comprehensive error handling and validation
@@ -122,7 +122,7 @@ rhs_values = [100.0, 80.0]
 # Result: Optimal production quantities
 ```
 
-### Portfolio Examples
+### Financial Examples
 
 - **[Portfolio Optimization](constrained_opt_mcp/examples/financial/portfolio_optimization.py)** - Advanced portfolio optimization strategies including Markowitz, Black-Litterman, and ESG-constrained optimization
 - **[Risk Management](constrained_opt_mcp/examples/financial/risk_management.py)** - Risk management strategies including VaR optimization, stress testing, and hedging
@@ -178,7 +178,7 @@ pytest --cov=constrained_opt_mcp
 | Convex Optimization | CVXPY | Portfolio optimization, machine learning |
 | Linear Programming | HiGHS | Production planning, resource allocation |
 | Constraint Programming | OR-Tools | Scheduling, assignment, routing |
-| Portfolio Optimization | Multiple | Risk management, portfolio construction |
+| Financial Optimization | Multiple | Risk management, portfolio construction |
 
 ## 🤝 Contributing
 
@@ -207,6 +207,6 @@ For questions, issues, or contributions, please:
 ### Version 1.0.0
 - Initial release
 - Support for Z3, CVXPY, HiGHS, and OR-Tools
-- Portfolio optimization examples
+- Financial optimization examples
 - Comprehensive test suite
 - MCP server implementation
