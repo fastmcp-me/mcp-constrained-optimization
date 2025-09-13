@@ -34,6 +34,44 @@ cd constrained-opt-mcp
 pip install -e .
 ```
 
+## 📐 Mathematical Foundations
+
+### Optimization Theory
+
+The Constrained Optimization MCP Server implements solutions for various classes of optimization problems:
+
+#### **Linear Programming (LP)**
+$$\min_{x} c^T x \quad \text{subject to} \quad Ax \leq b, \quad x \geq 0$$
+
+#### **Quadratic Programming (QP)**
+$$\min_{x} \frac{1}{2}x^T Q x + c^T x \quad \text{subject to} \quad Ax \leq b, \quad x \geq 0$$
+
+#### **Convex Optimization**
+$$\min_{x} f(x) \quad \text{subject to} \quad g_i(x) \leq 0, \quad h_j(x) = 0$$
+
+Where $f$ and $g_i$ are convex functions.
+
+#### **Constraint Satisfaction Problems (CSP)**
+Find $x \in \mathcal{D}$ such that $C_1(x) \land C_2(x) \land \ldots \land C_k(x)$
+
+#### **Portfolio Optimization (Markowitz)**
+$$\max_{w} \mu^T w - \frac{\lambda}{2} w^T \Sigma w \quad \text{subject to} \quad \sum_{i=1}^{n} w_i = 1, \quad w_i \geq 0$$
+
+Where:
+- $w$: portfolio weights
+- $\mu$: expected returns
+- $\Sigma$: covariance matrix
+- $\lambda$: risk aversion parameter
+
+### Solver Capabilities
+
+| Problem Type | Solver | Complexity | Mathematical Form |
+|--------------|--------|------------|-------------------|
+| Constraint Satisfaction | Z3 | NP-Complete | Logical constraints |
+| Convex Optimization | CVXPY | Polynomial | Convex functions |
+| Linear Programming | HiGHS | Polynomial | Linear constraints |
+| Constraint Programming | OR-Tools | NP-Complete | Discrete domains |
+
 ## 🚀 Quick Start
 
 ### 1. Run Examples

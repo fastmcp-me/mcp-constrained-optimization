@@ -1,24 +1,44 @@
 [project]
 name = "constrained-opt-mcp"
 version = "1.0.0"
-description = "A general-purpose Model Context Protocol server for solving combinatorial optimization problems with logical and numerical constraints"
+description = "General Purpose MCP Server for Constrained Optimization - AI agents for optimization tasks such as portfolio optimization, scheduling, and combinatorial problems"
 authors = [
-    {name = "Rajnish Sharma", email = "rajnish@example.com"}
+    {name = "Rajnish Sharma", email = "rajnish.sst1@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 license = {text = "Apache-2.0"}
-keywords = ["optimization", "mcp", "constraint-satisfaction", "linear-programming", "combinatorial-optimization"]
+keywords = [
+    "optimization", 
+    "mcp", 
+    "model-context-protocol", 
+    "constraint-satisfaction", 
+    "linear-programming", 
+    "combinatorial-optimization",
+    "portfolio-optimization",
+    "scheduling",
+    "ai-agents",
+    "mathematical-optimization",
+    "operations-research",
+    "financial-optimization"
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Financial and Insurance Industry",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Office/Business :: Financial :: Investment",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Distributed Computing",
+    "Framework :: Jupyter",
 ]
 dependencies = [
     "z3-solver>=4.14.1.0",
