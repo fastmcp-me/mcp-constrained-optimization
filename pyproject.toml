@@ -1,6 +1,6 @@
 [project]
 name = "constrained-opt-mcp"
-version = "1.0.0"
+version = "1.0.1"
 description = "General Purpose MCP Server for Constrained Optimization - AI agents for optimization tasks such as portfolio optimization, scheduling, and combinatorial problems"
 authors = [
     {name = "Rajnish Sharma", email = "rajnish.sst1@gmail.com"}

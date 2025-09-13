@@ -75,6 +75,8 @@ class Z3Constraint(BaseConstraint):
 
 class Z3Problem(BaseProblem):
     """Complete Z3 constraint satisfaction problem."""
+    
+    model_config = {"arbitrary_types_allowed": True}
 
     variables: List[Z3Variable] = Field(..., description="Problem variables")
     constraints: List[Z3Constraint] = Field(..., description="Problem constraints")
@@ -114,6 +116,8 @@ class Z3Problem(BaseProblem):
 
 class Z3Solution(BaseSolution):
     """Solution to a Z3 problem."""
+    
+    model_config = {"arbitrary_types_allowed": True}
 
     values: Dict[str, Z3Value] = Field(..., description="Variable values")
     is_satisfiable: bool = Field(..., description="Whether problem is satisfiable")
