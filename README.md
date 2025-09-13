@@ -127,6 +127,29 @@ rhs_values = [100.0, 80.0]
 - **[Portfolio Optimization](constrained_opt_mcp/examples/financial/portfolio_optimization.py)** - Advanced portfolio optimization strategies including Markowitz, Black-Litterman, and ESG-constrained optimization
 - **[Risk Management](constrained_opt_mcp/examples/financial/risk_management.py)** - Risk management strategies including VaR optimization, stress testing, and hedging
 
+#### Enhanced Portfolio Optimization Features
+
+**Equity Portfolio Optimization:**
+- Sector diversification constraints (max 25% per sector)
+- Market cap constraints (large, mid, small cap allocations)
+- ESG (Environmental, Social, Governance) constraints
+- Liquidity requirements and individual position limits
+- Risk-return optimization with advanced metrics
+
+**Multi-Asset Portfolio Optimization:**
+- Asset class constraints (equity, fixed income, alternatives, cash)
+- Regional exposure limits (developed vs emerging markets)
+- Alternative investment constraints (commodities, real estate, private equity)
+- Dynamic rebalancing and risk budgeting
+- Multi-period optimization with transaction costs
+
+**Advanced Risk Metrics:**
+- Value at Risk (VaR) and Conditional VaR (CVaR)
+- Maximum Drawdown and Tail Risk
+- Factor exposure analysis and risk attribution
+- Stress testing and scenario analysis
+- Correlation and concentration risk management
+
 ### Classic Examples
 
 - **[Chemical Engineering](examples/chemical_engineering.py)** - Pipeline design optimization using Z3 SMT solver
@@ -159,6 +182,8 @@ pytest --cov=constrained_opt_mcp
 - **[API Reference](docs/README.md)** - Complete API documentation
 - **[Examples](examples/)** - Comprehensive examples and demos
 - **[Jupyter Notebook](examples/constrained_optimization_demo.ipynb)** - Interactive demo notebook
+- **[PDF Documentation](docs/constrained_optimization_package.pdf)** - Comprehensive PDF guide with theory, examples, and implementation details
+- **[Journal-Style PDF](docs/constrained_optimization_journal.pdf)** - Academic paper format with literature review, mathematics, and research contributions
 
 ## 🏗️ Architecture
 
