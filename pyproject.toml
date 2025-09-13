@@ -1,0 +1,82 @@
+[project]
+name = "constrained-opt-mcp"
+version = "1.0.0"
+description = "A general-purpose Model Context Protocol server for solving combinatorial optimization problems with logical and numerical constraints"
+authors = [
+    {name = "Stephen Diehl", email = "stephen@stephendiehl.com"},
+    {name = "Rajnish Kumar", email = "rajnish@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+keywords = ["optimization", "mcp", "constraint-satisfaction", "linear-programming", "combinatorial-optimization"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "z3-solver>=4.14.1.0",
+    "pydantic>=2.0.0",
+    "returns>=0.20.0",
+    "fastmcp>=0.1.0",
+    "cvxpy>=1.6.0",
+    "ortools<9.15.0",
+    "highspy>=1.11.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "pandas>=2.0.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "jupyter>=1.0.0",
+    "ipywidgets>=8.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.4.0",
+    "ruff>=0.11.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "N", "UP", "ANN", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/*.py" = ["ANN201", "ANN001"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "examples"]
+python_files = ["test_*.py", "*_test.py", "*.py"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+    "ignore::UserWarning:cvxpy.*",
+    "ignore:Type google._upb._message.*:DeprecationWarning",
+]
+norecursedirs = ["examples/full"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["constrained_opt_mcp"]
+
+[tool.hatch.build.targets.wheel.scripts]
+constrained-opt-mcp = "constrained_opt_mcp.server.main:main"
+
+[project.scripts]
+constrained-opt-mcp = "constrained_opt_mcp.server.main:main"
