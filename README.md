@@ -36,13 +36,28 @@ pip install -e .
 
 ## 🚀 Quick Start
 
-### 1. Start the MCP Server
+### 1. Run Examples
+
+```bash
+# Run individual examples
+python examples/nqueens.py
+python examples/knapsack.py
+python examples/portfolio_optimization.py
+python examples/job_shop_scheduling.py
+python examples/nurse_scheduling.py
+python examples/economic_production_planning.py
+
+# Run interactive notebook
+jupyter notebook examples/constrained_optimization_demo.ipynb
+```
+
+### 2. Start the MCP Server
 
 ```bash
 constrained-opt-mcp
 ```
 
-### 2. Connect from AI Assistant
+### 3. Connect from AI Assistant
 
 Add the server to your MCP configuration:
 
@@ -57,7 +72,7 @@ Add the server to your MCP configuration:
 }
 ```
 
-### 3. Use the Tools
+### 4. Use the Tools
 
 The server provides the following tools:
 
@@ -150,13 +165,22 @@ rhs_values = [100.0, 80.0]
 - Stress testing and scenario analysis
 - Correlation and concentration risk management
 
-### Classic Examples
+### Comprehensive Examples
 
-- **[Chemical Engineering](examples/chemical_engineering.py)** - Pipeline design optimization using Z3 SMT solver
-- **[Job Shop Scheduling](examples/job_shop.py)** - Complex scheduling problem using OR-Tools
-- **[Nurse Scheduling](examples/nurse_scheduling.py)** - Hospital staff scheduling using OR-Tools
-- **[Coin Problem](examples/coin_problem.py)** - Classic logic puzzle using Z3
-- **[N-Queens](examples/nqueens.py)** - Place N queens on an N×N chessboard using OR-Tools
+#### 🎯 **Combinatorial Optimization**
+- **[N-Queens Problem](examples/nqueens.py)** - Classic constraint satisfaction with chessboard visualization
+- **[Knapsack Problem](examples/knapsack.py)** - 0/1 and multiple knapsack variants with performance analysis
+
+#### 🏭 **Scheduling & Operations**
+- **[Job Shop Scheduling](examples/job_shop_scheduling.py)** - Multi-machine production scheduling with Gantt charts
+- **[Nurse Scheduling](examples/nurse_scheduling.py)** - Complex workforce scheduling with fairness constraints
+
+#### 📊 **Quantitative Economics & Finance**
+- **[Portfolio Optimization](examples/portfolio_optimization.py)** - Advanced strategies including Markowitz, Black-Litterman, Risk Parity, and ESG-constrained optimization
+- **[Economic Production Planning](examples/economic_production_planning.py)** - Multi-period supply chain optimization with inventory management
+
+#### 🧮 **Interactive Learning**
+- **[Comprehensive Demo Notebook](examples/constrained_optimization_demo.ipynb)** - Interactive Jupyter notebook with all solver types and visualizations
 
 ## 🧪 Testing
 

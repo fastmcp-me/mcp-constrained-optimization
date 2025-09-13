@@ -10,13 +10,20 @@ The Constrained Optimization MCP Server provides a unified interface to multiple
 - **Convex Optimization** (CVXPY)
 - **Linear and Mixed-Integer Programming** (HiGHS)
 - **Constraint Programming** (OR-Tools)
-- **Financial Optimization** (Portfolio construction, risk management)
+- **Portfolio Optimization** (Markowitz, Black-Litterman, Risk Parity, ESG-constrained)
+- **Scheduling & Operations** (Job shop scheduling, nurse scheduling, resource allocation)
+- **Combinatorial Optimization** (N-Queens, knapsack problems, assignment)
+- **Economic Production Planning** (Multi-period planning, inventory management)
 
 ## Features
 
 - 🚀 **Unified Interface**: Single MCP server for multiple optimization backends
 - 🧠 **AI-Ready**: Designed for use with AI assistants through MCP protocol
-- 📊 **Financial Focus**: Specialized tools for portfolio optimization and risk management
+- 📊 **Comprehensive Examples**: Extensive examples across multiple domains
+- 🎯 **Combinatorial Optimization**: N-Queens, knapsack, and assignment problems
+- 🏭 **Scheduling & Operations**: Job shop and nurse scheduling with visualizations
+- 💰 **Portfolio Optimization**: Advanced financial strategies and risk management
+- 🏭 **Economic Planning**: Multi-period production planning and supply chain optimization
 - 🔧 **Extensible**: Modular design for easy addition of new solvers
 - 📈 **High Performance**: Optimized for large-scale problems
 - 🛡️ **Robust**: Comprehensive error handling and validation
@@ -65,6 +72,64 @@ The server provides the following tools:
 - `solve_linear_programming`: Solve linear programming problems
 - `solve_constraint_programming`: Solve constraint programming problems
 - `solve_portfolio_optimization`: Solve portfolio optimization problems
+
+## Comprehensive Examples
+
+### 🎯 Combinatorial Optimization
+
+#### N-Queens Problem (`examples/nqueens.py`)
+- Classic constraint satisfaction problem
+- Chessboard visualization of solutions
+- Performance analysis across board sizes
+- OR-Tools constraint programming
+
+#### Knapsack Problem (`examples/knapsack.py`)
+- 0/1 and multiple knapsack variants
+- Binary decision variables
+- Value maximization under constraints
+- Performance analysis and visualization
+
+### 🏭 Scheduling & Operations
+
+#### Job Shop Scheduling (`examples/job_shop_scheduling.py`)
+- Multi-machine production scheduling
+- Makespan minimization
+- Gantt chart visualization
+- Resource allocation constraints
+
+#### Nurse Scheduling (`examples/nurse_scheduling.py`)
+- Complex workforce scheduling
+- Shift coverage and fairness constraints
+- Nurse preferences and soft constraints
+- Schedule quality analysis
+
+### 📊 Portfolio Optimization
+
+#### Advanced Portfolio Optimization (`examples/portfolio_optimization.py`)
+- Markowitz mean-variance optimization
+- Black-Litterman model with investor views
+- Risk parity optimization
+- ESG-constrained optimization
+- Efficient frontier analysis
+- Strategy comparison and visualization
+
+### 🏭 Economic Production Planning
+
+#### Multi-Period Production Planning (`examples/economic_production_planning.py`)
+- Multi-period production planning
+- Inventory management and demand forecasting
+- Cost minimization strategies
+- Resource allocation and capacity constraints
+- Strategy comparison (JIT vs Safety Stock vs Balanced)
+
+### 🧮 Interactive Learning
+
+#### Comprehensive Demo Notebook (`examples/constrained_optimization_demo.ipynb`)
+- Interactive Jupyter notebook
+- All solver types with examples
+- Real-time visualizations
+- Mathematical theory and formulations
+- Performance analysis
 
 ## Examples
 
