@@ -15,7 +15,7 @@ by AI assistants to solve complex optimization problems.
 """
 
 __version__ = "1.0.0"
-__author__ = "Stephen Diehl, Rajnish Kumar"
+__author__ = "Rajnish Sharma"
 
 from .core.problem_types import ProblemType, OptimizationSense
 from .core.base_models import BaseProblem, BaseSolution, BaseVariable, BaseConstraint

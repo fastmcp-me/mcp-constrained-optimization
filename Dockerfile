@@ -12,7 +12,7 @@ ENV PATH="/root/.local/bin/:$PATH"
 
 COPY pyproject.toml .
 COPY uv.lock .
-COPY usolver_mcp/ ./usolver_mcp/
+COPY constrained_opt_mcp/ ./constrained_opt_mcp/
 COPY examples/ ./examples/
 
 # Expose the default MCP port
@@ -23,4 +23,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8081/healthcheck || exit 1
 
 # Run the server with SSE transport
-CMD ["uv", "run", "mcp", "run", "usolver_mcp/server/main.py","--transport", "sse"]
+CMD ["uv", "run", "mcp", "run", "constrained_opt_mcp/server/main.py","--transport", "sse"]

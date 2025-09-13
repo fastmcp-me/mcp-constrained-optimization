@@ -3,8 +3,7 @@ name = "constrained-opt-mcp"
 version = "1.0.0"
 description = "A general-purpose Model Context Protocol server for solving combinatorial optimization problems with logical and numerical constraints"
 authors = [
-    {name = "Stephen Diehl", email = "stephen@stephendiehl.com"},
-    {name = "Rajnish Kumar", email = "rajnish@example.com"}
+    {name = "Rajnish Sharma", email = "rajnish@example.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.12"

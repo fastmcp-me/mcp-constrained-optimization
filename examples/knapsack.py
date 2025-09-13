@@ -1,286 +1,311 @@
+#!/usr/bin/env python3
 """
-Knapsack Problem Optimization Example
+Knapsack Problem using Constrained Optimization MCP Server
 
-This module demonstrates the classic 0/1 knapsack problem using constraint programming.
-The problem involves selecting items to maximize value while staying within a weight
-capacity constraint. This is a fundamental combinatorial optimization problem.
+The knapsack problem is a classic optimization problem where we have a set of items,
+each with a weight and value, and we want to maximize the total value while staying
+within a weight limit.
 
-The constraint programming problem involves:
-- Binary decision variables for each item (take or leave)
-- Weight capacity constraint (total weight ≤ capacity)
-- Value maximization objective
-- Optional: multiple knapsacks or additional constraints
-
-This is a classic integer programming problem suitable for OR-Tools CP-SAT.
+This example demonstrates:
+- Integer programming
+- OR-Tools constraint programming
+- Binary decision variables
+- Multiple knapsack variants
 """
 
-from returns.result import Success
-
-from usolver_mcp.models.ortools_models import (
-    Constraint,
-    Objective,
-    ObjectiveType,
-    Problem,
-    Variable,
-    VariableType,
+import numpy as np
+import matplotlib.pyplot as plt
+from constrained_opt_mcp.models.ortools_models import (
+    ORToolsProblem,
+    ORToolsVariable,
+    ORToolsConstraint
 )
-from usolver_mcp.solvers.ortools_solver import solve_problem
+from constrained_opt_mcp.solvers.ortools_solver import solve_problem
 
-
-def create_knapsack_problem(capacity=100, include_advanced_constraints=False):
-    """
-    Create a knapsack optimization problem.
-
-    Args:
-        capacity: Weight capacity of the knapsack
-        include_advanced_constraints: Whether to include additional constraints
-
-    Returns:
-        Problem: The OR-Tools constraint programming problem
-    """
-    # Items with (value, weight, name) tuples
-    items = [
-        (60, 20, "Laptop"),
-        (100, 30, "Camera"),
-        (120, 40, "Tablet"),
-        (80, 25, "Books"),
-        (40, 15, "Clothes"),
-        (70, 35, "Tools"),
-        (90, 45, "Equipment"),
-        (50, 20, "Electronics"),
-        (110, 50, "Software"),
-        (30, 10, "Accessories"),
-        (85, 30, "Gadgets"),
-        (95, 35, "Supplies"),
-    ]
-
-    n_items = len(items)
-    values = [item[0] for item in items]
-    weights = [item[1] for item in items]
-    [item[2] for item in items]
-
-    # Decision variables: binary choice for each item
-    selected = Variable(
-        name="selected",
-        type=VariableType.BOOLEAN,
-        shape=[n_items],
-        description="Binary variable indicating if item i is selected",
+def solve_knapsack(values, weights, capacity):
+    """Solve the 0/1 knapsack problem"""
+    
+    n_items = len(values)
+    
+    # Create problem
+    problem = ORToolsProblem(
+        name="Knapsack Problem",
+        problem_type="constraint_programming"
     )
-
-    constraints = []
-
-    # Weight capacity constraint
-    weight_expr = " + ".join([f"{weights[i]} * selected[{i}]" for i in range(n_items)])
-    constraints.append(
-        Constraint(
-            expression=f"model.add({weight_expr} <= {capacity})",
-            description=f"Total weight must not exceed {capacity}",
+    
+    # Create binary variables: x[i] = 1 if item i is selected
+    items = []
+    for i in range(n_items):
+        var = ORToolsVariable(
+            name=f"item_{i}",
+            domain=[0, 1],
+            var_type="binary"
         )
+        items.append(var)
+        problem.add_variable(var)
+    
+    # Objective: maximize total value
+    problem.set_objective(
+        objective_type="maximize",
+        coefficients=values,
+        variables=items
     )
-
-    # Optional advanced constraints
-    if include_advanced_constraints:
-        # Constraint: If laptop is selected, tablet must also be selected
-        constraints.append(
-            Constraint(
-                expression="model.add(selected[0] <= selected[2])",  # Laptop -> Tablet
-                description="If laptop is selected, tablet must also be selected",
-            )
-        )
-
-        # Constraint: Can select at most 2 electronics items (laptop, camera, electronics, gadgets)
-        electronics_indices = [0, 1, 7, 10]  # Laptop, Camera, Electronics, Gadgets
-        electronics_expr = " + ".join([f"selected[{i}]" for i in electronics_indices])
-        constraints.append(
-            Constraint(
-                expression=f"model.add({electronics_expr} <= 2)",
-                description="At most 2 electronics items can be selected",
-            )
-        )
-
-    # Objective: Maximize total value
-    value_expr = " + ".join([f"{values[i]} * selected[{i}]" for i in range(n_items)])
-    objective = Objective(
-        type=ObjectiveType.MAXIMIZE,
-        expression=value_expr,
-    )
-
-    return Problem(
-        variables=[selected],
-        constraints=constraints,
-        objective=objective,
-        description=f"Knapsack problem with capacity {capacity}",
-        parameters={
-            "capacity": capacity,
-            "items": items,
-            "enumerate_all_solutions": False,
-        },
-    )
-
-
-def solve_knapsack(capacity=100, include_advanced_constraints=False):
-    """
-    Solve the knapsack problem and return results.
-
-    Args:
-        capacity: Weight capacity of the knapsack
-        include_advanced_constraints: Whether to include additional constraints
-
-    Returns:
-        dict: Solution results including selected items and statistics
-    """
-    problem = create_knapsack_problem(capacity, include_advanced_constraints)
-    result = solve_problem(problem)
-
-    # Item information for analysis
-    items = problem.parameters["items"]
-
-    match result:
-        case Success(solution):
-            if solution.is_feasible:
-                selected_items = solution.values["selected"]
-
-                # Analyze the solution
-                total_value = 0
-                total_weight = 0
-                selected_list = []
-
-                for i, is_selected in enumerate(selected_items):
-                    if is_selected:
-                        value, weight, name = items[i]
-                        total_value += value
-                        total_weight += weight
-                        selected_list.append(
-                            {
-                                "index": i,
-                                "name": name,
-                                "value": value,
-                                "weight": weight,
-                                "value_density": value / weight,
-                            }
-                        )
-
-                return {
-                    "status": "optimal",
-                    "capacity": capacity,
-                    "selected_items": selected_list,
-                    "total_value": total_value,
-                    "total_weight": total_weight,
-                    "weight_utilization": total_weight / capacity,
-                    "objective_value": solution.objective_value,
-                    "statistics": solution.statistics,
-                }
-            else:
-                return {
-                    "status": solution.status,
-                    "error": "No feasible solution found",
-                }
-        case _:
-            return {"status": "error", "error": "Failed to solve knapsack problem"}
-
-
-def analyze_efficiency(results):
-    """Analyze the efficiency of the knapsack solution."""
-    if results["status"] != "optimal":
+    
+    # Constraint: total weight <= capacity
+    problem.add_constraint(ORToolsConstraint(
+        name="weight_constraint",
+        constraint_type="less_equal",
+        variables=items,
+        coefficients=weights,
+        constant=capacity
+    ))
+    
+    # Solve the problem
+    solution = solve_problem(problem)
+    
+    if solution.is_optimal:
+        selected_items = [solution.variable_values[f"item_{i}"] for i in range(n_items)]
+        total_value = sum(values[i] * selected_items[i] for i in range(n_items))
+        total_weight = sum(weights[i] * selected_items[i] for i in range(n_items))
+        
+        return {
+            'selected_items': selected_items,
+            'total_value': total_value,
+            'total_weight': total_weight,
+            'capacity': capacity
+        }
+    else:
         return None
 
-    selected_items = results["selected_items"]
-    capacity = results["capacity"]
-
-    # Calculate value density statistics
-    densities = [item["value_density"] for item in selected_items]
-    avg_density = sum(densities) / len(densities) if densities else 0
-
-    # Calculate unused capacity
-    unused_capacity = capacity - results["total_weight"]
-
-    return {
-        "average_value_density": avg_density,
-        "unused_capacity": unused_capacity,
-        "capacity_utilization": results["weight_utilization"],
-        "items_selected": len(selected_items),
-        "value_per_weight_unit": (
-            results["total_value"] / results["total_weight"]
-            if results["total_weight"] > 0
-            else 0
-        ),
-    }
-
-
-def print_results(results) -> None:
-    """Print knapsack optimization results in a formatted way."""
-    if results["status"] != "optimal":
-        print(f"Problem Status: {results['status']}")
-        if "error" in results:
-            print(f"Error: {results['error']}")
-        return
-
-    print("Knapsack Problem Optimization Results")
-    print("=" * 55)
-
-    print(f"\nKnapsack Capacity: {results['capacity']} units")
-    print(f"Total Value: {results['total_value']}")
-    print(
-        f"Total Weight: {results['total_weight']} / {results['capacity']} ({results['weight_utilization']:.1%})"
+def solve_multiple_knapsack(values, weights, capacities):
+    """Solve the multiple knapsack problem"""
+    
+    n_items = len(values)
+    n_knapsacks = len(capacities)
+    
+    # Create problem
+    problem = ORToolsProblem(
+        name="Multiple Knapsack Problem",
+        problem_type="constraint_programming"
     )
+    
+    # Create binary variables: x[i][j] = 1 if item i is in knapsack j
+    items = []
+    for i in range(n_items):
+        for j in range(n_knapsacks):
+            var = ORToolsVariable(
+                name=f"item_{i}_knapsack_{j}",
+                domain=[0, 1],
+                var_type="binary"
+            )
+            items.append(var)
+            problem.add_variable(var)
+    
+    # Objective: maximize total value
+    objective_coeffs = []
+    for i in range(n_items):
+        for j in range(n_knapsacks):
+            objective_coeffs.append(values[i])
+    
+    problem.set_objective(
+        objective_type="maximize",
+        coefficients=objective_coeffs,
+        variables=items
+    )
+    
+    # Constraints: each item can be in at most one knapsack
+    for i in range(n_items):
+        item_vars = [items[i * n_knapsacks + j] for j in range(n_knapsacks)]
+        problem.add_constraint(ORToolsConstraint(
+            name=f"item_{i}_unique",
+            constraint_type="less_equal",
+            variables=item_vars,
+            coefficients=[1] * n_knapsacks,
+            constant=1
+        ))
+    
+    # Constraints: each knapsack weight limit
+    for j in range(n_knapsacks):
+        knapsack_vars = [items[i * n_knapsacks + j] for i in range(n_items)]
+        knapsack_weights = [weights[i] for i in range(n_items)]
+        
+        problem.add_constraint(ORToolsConstraint(
+            name=f"knapsack_{j}_capacity",
+            constraint_type="less_equal",
+            variables=knapsack_vars,
+            coefficients=knapsack_weights,
+            constant=capacities[j]
+        ))
+    
+    # Solve the problem
+    solution = solve_problem(problem)
+    
+    if solution.is_optimal:
+        result = {
+            'assignments': {},
+            'total_value': 0,
+            'knapsack_weights': [0] * n_knapsacks
+        }
+        
+        for i in range(n_items):
+            for j in range(n_knapsacks):
+                var_name = f"item_{i}_knapsack_{j}"
+                if solution.variable_values[var_name] == 1:
+                    if j not in result['assignments']:
+                        result['assignments'][j] = []
+                    result['assignments'][j].append(i)
+                    result['total_value'] += values[i]
+                    result['knapsack_weights'][j] += weights[i]
+        
+        return result
+    else:
+        return None
 
-    # Print selected items
-    selected_items = results["selected_items"]
-    print(f"\nSelected Items ({len(selected_items)} items):")
-    print("-" * 55)
-    print(f"{'Item':<15} {'Value':<8} {'Weight':<8} {'Density':<10}")
-    print("-" * 55)
+def visualize_knapsack_solution(values, weights, solution, capacity):
+    """Visualize the knapsack solution"""
+    if not solution:
+        print("No solution found!")
+        return
+    
+    selected_items = solution['selected_items']
+    total_value = solution['total_value']
+    total_weight = solution['total_weight']
+    
+    # Create visualization
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    
+    # Plot 1: Item selection
+    n_items = len(values)
+    x_pos = np.arange(n_items)
+    
+    colors = ['green' if selected_items[i] else 'red' for i in range(n_items)]
+    bars = ax1.bar(x_pos, values, color=colors, alpha=0.7)
+    
+    ax1.set_xlabel('Item Index')
+    ax1.set_ylabel('Value')
+    ax1.set_title('Knapsack Solution: Selected Items')
+    ax1.set_xticks(x_pos)
+    ax1.grid(True, alpha=0.3)
+    
+    # Add value labels on bars
+    for i, (bar, value) in enumerate(zip(bars, values)):
+        if selected_items[i]:
+            ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1,
+                    f'{value}', ha='center', va='bottom', fontweight='bold')
+    
+    # Plot 2: Weight vs Value scatter
+    selected_values = [values[i] for i in range(n_items) if selected_items[i]]
+    selected_weights = [weights[i] for i in range(n_items) if selected_items[i]]
+    unselected_values = [values[i] for i in range(n_items) if not selected_items[i]]
+    unselected_weights = [weights[i] for i in range(n_items) if not selected_items[i]]
+    
+    ax2.scatter(selected_weights, selected_values, c='green', s=100, alpha=0.7, label='Selected')
+    ax2.scatter(unselected_weights, unselected_values, c='red', s=100, alpha=0.7, label='Not Selected')
+    
+    ax2.set_xlabel('Weight')
+    ax2.set_ylabel('Value')
+    ax2.set_title('Weight vs Value Distribution')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    
+    # Add capacity line
+    ax2.axvline(x=capacity, color='blue', linestyle='--', alpha=0.7, label=f'Capacity: {capacity}')
+    ax2.legend()
+    
+    plt.tight_layout()
+    plt.show()
+    
+    # Print summary
+    print(f"\nKnapsack Solution Summary:")
+    print(f"Total Value: {total_value}")
+    print(f"Total Weight: {total_weight}/{capacity}")
+    print(f"Capacity Utilization: {total_weight/capacity:.1%}")
+    print(f"Selected Items: {[i for i in range(n_items) if selected_items[i]]}")
 
-    for item in sorted(selected_items, key=lambda x: x["value_density"], reverse=True):
-        print(
-            f"{item['name']:<15} {item['value']:<8} {item['weight']:<8} {item['value_density']:<10.2f}"
-        )
+def generate_knapsack_data(n_items=20, max_value=100, max_weight=50):
+    """Generate random knapsack data"""
+    np.random.seed(42)
+    
+    values = np.random.randint(1, max_value + 1, n_items)
+    weights = np.random.randint(1, max_weight + 1, n_items)
+    capacity = int(0.6 * sum(weights))  # 60% of total weight
+    
+    return values, weights, capacity
 
-    # Efficiency analysis
-    analysis = analyze_efficiency(results)
-    if analysis:
-        print("\nEfficiency Analysis:")
-        print("-" * 25)
-        print(f"Average value density: {analysis['average_value_density']:.2f}")
-        print(f"Unused capacity: {analysis['unused_capacity']} units")
-        print(f"Value per weight unit: {analysis['value_per_weight_unit']:.2f}")
-
-    # Print solver statistics
-    if "statistics" in results:
-        print("\nSolver Statistics:")
-        for key, value in results["statistics"].items():
-            display_key = " ".join(word.title() for word in key.split("_"))
-            print(f"  {display_key}: {value}")
-
-
-def main() -> None:
-    """Main function to run the knapsack optimization example."""
-    print(__doc__)
-
-    # Solve basic knapsack problem
-    print("Solving basic knapsack problem...")
-    results = solve_knapsack(capacity=100)
-    print_results(results)
-
-
-def test_knapsack() -> None:
-    """Test function for pytest."""
-    # Test basic knapsack
-    results = solve_knapsack(capacity=100)
-    assert results["status"] == "optimal"
-    assert results["total_weight"] <= 100
-    assert results["total_value"] > 0
-    assert len(results["selected_items"]) > 0
-
-    # Test that weight constraint is satisfied
-    assert results["weight_utilization"] <= 1.0
-
-    # Test efficiency analysis
-    analysis = analyze_efficiency(results)
-    assert analysis is not None
-    assert analysis["average_value_density"] > 0
-    assert analysis["capacity_utilization"] <= 1.0
-
+def analyze_knapsack_performance():
+    """Analyze performance for different problem sizes"""
+    sizes = [10, 20, 50, 100]
+    solve_times = []
+    optimal_values = []
+    
+    for n in sizes:
+        print(f"Solving knapsack with {n} items...")
+        
+        values, weights, capacity = generate_knapsack_data(n)
+        
+        import time
+        start_time = time.time()
+        solution = solve_knapsack(values, weights, capacity)
+        end_time = time.time()
+        
+        solve_time = end_time - start_time
+        solve_times.append(solve_time)
+        
+        if solution:
+            optimal_values.append(solution['total_value'])
+            print(f"  Optimal value: {solution['total_value']}, Time: {solve_time:.3f}s")
+        else:
+            optimal_values.append(0)
+            print(f"  No solution found, Time: {solve_time:.3f}s")
+    
+    # Plot performance
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    ax1.plot(sizes, solve_times, 'bo-', linewidth=2, markersize=8)
+    ax1.set_xlabel('Number of Items')
+    ax1.set_ylabel('Solve Time (seconds)')
+    ax1.set_title('Knapsack Solve Time')
+    ax1.grid(True, alpha=0.3)
+    
+    ax2.plot(sizes, optimal_values, 'go-', linewidth=2, markersize=8)
+    ax2.set_xlabel('Number of Items')
+    ax2.set_ylabel('Optimal Value')
+    ax2.set_title('Optimal Values')
+    ax2.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
-    main()
+    print("Knapsack Problem Solver")
+    print("=" * 50)
+    
+    # Generate sample data
+    values, weights, capacity = generate_knapsack_data(20)
+    
+    print(f"Problem: {len(values)} items, capacity = {capacity}")
+    print(f"Values: {values}")
+    print(f"Weights: {weights}")
+    
+    # Solve single knapsack
+    print("\nSolving single knapsack problem...")
+    solution = solve_knapsack(values, weights, capacity)
+    
+    if solution:
+        visualize_knapsack_solution(values, weights, solution, capacity)
+    else:
+        print("No solution found!")
+    
+    # Solve multiple knapsack
+    print("\nSolving multiple knapsack problem...")
+    capacities = [capacity // 2, capacity // 2]
+    multi_solution = solve_multiple_knapsack(values, weights, capacities)
+    
+    if multi_solution:
+        print(f"Multiple knapsack solution:")
+        print(f"Total value: {multi_solution['total_value']}")
+        for knapsack, items in multi_solution['assignments'].items():
+            print(f"Knapsack {knapsack}: items {items}, weight: {multi_solution['knapsack_weights'][knapsack]}")
+    
+    print("\nPerformance Analysis:")
+    analyze_knapsack_performance()
